@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════╗
-║   G R O Q  ·  C H A T B O T                         ║
+║   P I X E L  ·  A I  C H A T B O T                  ║
 ║   Powered by Groq API  ·  Built with Streamlit       ║
 ╚══════════════════════════════════════════════════════╝
 Run:
@@ -16,8 +16,8 @@ from groq import Groq
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="GROQ · CHAT",
-    page_icon="▸",
+    page_title="Pixel · AI Chat",
+    page_icon="◼",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -159,6 +159,53 @@ html, body, [data-testid="stAppViewContainer"] {
 .empty-title { font-size: 1.3rem; font-weight: 800; color: var(--border2); }
 .empty-hint  { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
 .em-chip { border: 1px solid var(--border); border-radius: 4px; padding: 3px 9px; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim); display: inline-block; margin: 3px; }
+
+/* ── Sidebar toggle button ── */
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"] {
+  background: var(--bg2) !important;
+  border: 1px solid var(--amber-dim) !important;
+  border-radius: 0 8px 8px 0 !important;
+  color: var(--amber) !important;
+  box-shadow: 2px 0 12px var(--amber-glow) !important;
+  width: 28px !important;
+  height: 52px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  z-index: 999 !important;
+}
+[data-testid="collapsedControl"]:hover,
+[data-testid="stSidebarCollapsedControl"]:hover {
+  background: var(--amber-glow) !important;
+  border-color: var(--amber) !important;
+  box-shadow: 2px 0 20px rgba(240,165,0,0.3) !important;
+}
+[data-testid="collapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] svg {
+  fill: var(--amber) !important;
+  color: var(--amber) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Sidebar expand button (inside sidebar, top) */
+[data-testid="stSidebar"] [data-testid="stSidebarNavCollapseButton"],
+button[kind="headerNoPadding"],
+[data-testid="stSidebar"] button[aria-label="Close sidebar"],
+[data-testid="stSidebar"] button[aria-label="Collapse sidebar"] {
+  background: var(--bg3) !important;
+  border: 1px solid var(--amber-dim) !important;
+  border-radius: 6px !important;
+  color: var(--amber) !important;
+}
+[data-testid="stSidebar"] button[aria-label="Close sidebar"] svg,
+[data-testid="stSidebar"] button[aria-label="Collapse sidebar"] svg {
+  fill: var(--amber) !important;
+  color: var(--amber) !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -175,7 +222,7 @@ GROQ_MODELS = {
 }
 
 SYSTEM_PRESETS = {
-    "Default":     "You are a fast, helpful AI assistant powered by Groq. Be concise, clear, and accurate.",
+    "Default":     "You are Pixel, a fast and helpful AI assistant powered by Groq. Be concise, clear, and accurate.",
     "Code Expert": "You are a senior software engineer. Write clean, well-commented, production-ready code with explanations.",
     "Creative":    "You are a creative writer. Use vivid language, imaginative ideas, and narrative flair.",
     "Analyst":     "You are a data analyst. Be structured, reason carefully, and present findings clearly.",
@@ -210,7 +257,7 @@ def ts():
     return time.strftime("%H:%M:%S")
 
 def render_msg(role: str, content: str, delay_idx: int = 0):
-    av_label  = "GQ"  if role == "assistant" else "YOU"
+    av_label  = "PX"  if role == "assistant" else "YOU"
     av_class  = "ai"  if role == "assistant" else "user"
     bub_class = "ai"  if role == "assistant" else "user"
     row_class = ""    if role == "assistant" else "user"
@@ -231,8 +278,8 @@ def render_msg(role: str, content: str, delay_idx: int = 0):
 with st.sidebar:
     st.markdown("""
     <div class="sb-header">
-      <div style="font-size:0.6rem;letter-spacing:.14em;text-transform:uppercase;color:#4a5060;margin-bottom:2px;">GROQ · INTERFACE</div>
-      <div style="font-size:1.05rem;font-weight:800;color:#f0a500;letter-spacing:.04em;">▸ GROQ CHAT</div>
+      <div style="font-size:0.6rem;letter-spacing:.14em;text-transform:uppercase;color:#4a5060;margin-bottom:2px;">PIXEL · AI CHATBOT</div>
+      <div style="font-size:1.05rem;font-weight:800;color:#f0a500;letter-spacing:.04em;">◼ PIXEL</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -316,9 +363,9 @@ with st.sidebar:
 model_display = GROQ_MODELS.get(st.session_state.model, st.session_state.model)
 st.markdown(f"""
 <div class="gq-header">
-  <div class="gq-logo">▸ GROQ</div>
+  <div class="gq-logo">◼ PIXEL</div>
   <div class="gq-header-title">
-    <strong>GROQ CHAT</strong>
+    <strong>PIXEL AI</strong>
     Ultra-fast LLM inference
   </div>
   <div class="gq-online">
@@ -334,8 +381,8 @@ if not st.session_state.messages:
     chips = "".join(f'<div class="em-chip">{v.split("·")[0].strip()}</div>' for v in GROQ_MODELS.values())
     st.markdown(f"""
     <div class="empty-state">
-      <div class="empty-glyph">▸</div>
-      <div class="empty-title">GROQ IS READY</div>
+      <div class="empty-glyph">◼</div>
+      <div class="empty-title">PIXEL IS READY</div>
       <div class="empty-hint">Ultra-fast inference. Select a model and start chatting.</div>
       <div style="margin-top:10px">{chips}</div>
     </div>
@@ -349,7 +396,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # ─── Input ────────────────────────────────────────────────────────────────────
 
-if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
+if user_input := st.chat_input("Message Pixel…  ⚡ Groq-powered"):
 
     if not st.session_state.api_key:
         st.error("⚠ No API key. Set GROQ_API_KEY env variable or enter it in the sidebar.")
@@ -366,7 +413,7 @@ if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
 
     typing_ph.markdown("""
     <div class="typing-wrap">
-      <div class="av ai">GQ</div>
+      <div class="av ai">PX</div>
       <div class="typing-bubble">
         <div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>
       </div>
@@ -397,7 +444,7 @@ if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
                 tps     = round(tok_est / max(elapsed, 0.01))
                 response_ph.markdown(f"""
                 <div class="msg-row">
-                  <div class="av ai">GQ</div>
+                  <div class="av ai">PX</div>
                   <div>
                     <div class="bubble ai">{full_text}<span style="color:#f0a500;animation:blink-dot .8s infinite;">▋</span></div>
                     <div class="bubble-meta">generating… {tps} tok/s · {elapsed}s</div>
@@ -408,7 +455,7 @@ if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
             elapsed = round(time.time() - t_start, 2)
             response_ph.markdown(f"""
             <div class="msg-row">
-              <div class="av ai">GQ</div>
+              <div class="av ai">PX</div>
               <div>
                 <div class="bubble ai">{full_text}</div>
                 <div class="bubble-meta">{ts()} · {GROQ_MODELS.get(st.session_state.model,'')} · ⚡ {elapsed}s</div>
@@ -430,7 +477,7 @@ if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
             typing_ph.empty()
             response_ph.markdown(f"""
             <div class="msg-row">
-              <div class="av ai">GQ</div>
+              <div class="av ai">PX</div>
               <div>
                 <div class="bubble ai">{full_text}</div>
                 <div class="bubble-meta">{ts()} · {GROQ_MODELS.get(st.session_state.model,'')} · ⚡ {elapsed}s</div>
@@ -451,7 +498,7 @@ if user_input := st.chat_input("Ask anything…  ⚡ Groq-powered"):
             msg = f"⚠ Error: {err}"
         response_ph.markdown(f"""
         <div class="msg-row">
-          <div class="av ai" style="border-color:#5a1a1a;color:#ff6b6b;">GQ</div>
+          <div class="av ai" style="border-color:#5a1a1a;color:#ff6b6b;">PX</div>
           <div><div class="bubble ai" style="border-left-color:#5a1a1a;color:#ff9090;">{msg}</div></div>
         </div>
         """, unsafe_allow_html=True)
